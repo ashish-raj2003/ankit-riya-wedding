@@ -13,21 +13,21 @@ const WEDDING = {
   dateLabel: "27 • FEBRUARY • 2027",
   venue: "K J International",
   address: "N.H-56, Airport Road, Near Sammukh Hospital, Babatpur, Sarai Takki, Varanasi, Uttar Pradesh, India",
-  mapQuery: "K J International Hotel",
+  mapQuery: "K J International Hotel, Babatpur, Varanasi",
   whatsappNumber: "917303732633", // country code + number, no + or spaces
   musicFile: "assets/wedding-music.mp3" // add your own royalty-free audio file
 };
 
-document.querySelectorAll("[data-bride]").forEach(el => el.textContent = WEDDING.bride);
 document.querySelectorAll("[data-groom]").forEach(el => el.textContent = WEDDING.groom);
-document.querySelector("[data-bride-parents]").textContent = WEDDING.brideParents;
+document.querySelectorAll("[data-bride]").forEach(el => el.textContent = WEDDING.bride);
 document.querySelector("[data-groom-parents]").textContent = WEDDING.groomParents;
+document.querySelector("[data-bride-parents]").textContent = WEDDING.brideParents;
 document.querySelector("[data-family]").textContent = WEDDING.family;
 document.querySelector("[data-wedding-date]").textContent = WEDDING.dateLabel;
 document.querySelector("[data-venue]").textContent = WEDDING.venue;
 document.querySelector("[data-address]").textContent = WEDDING.address;
 document.getElementById("map-link").href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(WEDDING.mapQuery);
-const rsvpText = `Hello! We are happy to share that we will join ${WEDDING.bride} & ${WEDDING.groom}'s wedding celebrations.`;
+const rsvpText = `Hello! We are happy to share that we will join ${WEDDING.groom} & ${WEDDING.bride}'s wedding celebrations.`;
 document.getElementById("whatsapp-rsvp").href = "https://wa.me/" + WEDDING.whatsappNumber + "?text=" + encodeURIComponent(rsvpText);
 
 // Countdown
