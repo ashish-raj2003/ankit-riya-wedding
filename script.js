@@ -124,93 +124,72 @@ if (menuButton && nav) {
   });
 }
 
-// ====================================
-// BACKGROUND MUSIC PLAYER
-// ====================================
 
-const audio = getId("bg-music");
-const musicButton = getId("music-toggle");
+// =====================================
+// BACKGROUND MUSIC
+// =====================================
+const audio = document.getElementById("bg-music");
+const musicButton = document.getElementById("music-toggle");
 
-let musicStarted = true;
-
-if (audio && musicButton) {
-
-  const musicLabel = musicButton.querySelector(".music-label");
-
-  // Configure audio
+if (audio) {
   audio.src = WEDDING.musicFile;
   audio.loop = true;
   audio.preload = "auto";
   audio.volume = 0.6;
+}
 
-  function updateMusicButton(isPlaying) {
-    if (musicLabel) {
-      musicLabel.textContent = isPlaying ? "Music on" : "Music off";
-    }
+function updateMusicLabel(message, playing) {
+  if (!musicButton) return;
 
-    musicButton.setAttribute(
-      "aria-label",
-      isPlaying ? "Pause background music" : "Play background music"
-    );
+  const label = musicButton.querySelector(".music-label");
+  if (label) label.textContent = message;
+
+  musicButton.setAttribute(
+    "aria-label",
+    playing ? "Pause background music" : "Play background music"
+  );
+}
+
+async function startWeddingMusic() {
+  if (!audio || !audio.paused) return;
+
+  try {
+    await audio.play();
+    updateMusicLabel("Music on", true);
+  } catch (error) {
+    console.log("Music playback blocked or unavailable:", error);
+    updateMusicLabel("Tap for music", false);
   }
+}
 
-  // Start music after a guest interaction
-  async function startWeddingMusic() {
-    if (musicStarted && !audio.paused) return;
+// Start music on the visitor's first click anywhere
+// except the music button itself.
+document.addEventListener("click", (event) => {
+  if (musicButton && musicButton.contains(event.target)) return;
+  startWeddingMusic();
+});
 
-    try {
-      await audio.play();
-      musicStarted = true;
-      updateMusicButton(true);
-    } catch (error) {
-      console.warn("Wedding music could not start:", error);
-
-      if (musicLabel) {
-        musicLabel.textContent = "Tap to play";
-      }
-    }
-  }
-
-  // Music button: play or pause
-  musicButton.addEventListener("click", async (event) => {
-    event.stopPropagation();
-
+// Music button: manually play or pause
+if (musicButton && audio) {
+  musicButton.addEventListener("click", async () => {
     if (audio.paused) {
       await startWeddingMusic();
     } else {
       audio.pause();
-      updateMusicButton(false);
     }
   });
+}
 
-  // Start music when guest taps elsewhere on the invitation.
-  // Ignore the music button itself to prevent double toggling.
-  document.addEventListener("click", (event) => {
-    if (!musicButton.contains(event.target)) {
-      startWeddingMusic();
-    }
+if (audio) {
+  audio.addEventListener("play", () => {
+    updateMusicLabel("Music on", true);
   });
 
-  // Also support keyboard interaction
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" || event.key === " ") {
-      if (!musicButton.contains(event.target)) {
-        startWeddingMusic();
-      }
-    }
+  audio.addEventListener("pause", () => {
+    updateMusicLabel("Music off", false);
   });
-
-  // Keep button status synchronized
-  audio.addEventListener("play", () => updateMusicButton(true));
-  audio.addEventListener("pause", () => updateMusicButton(false));
 
   audio.addEventListener("error", () => {
-    console.error("Unable to load wedding music:", audio.error);
-
-    if (musicLabel) {
-      musicLabel.textContent = "Music unavailable";
-    }
+    updateMusicLabel("Music unavailable", false);
   });
-
-  updateMusicButton(false);
 }
