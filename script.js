@@ -129,7 +129,7 @@ if (menuButton && nav) {
 // ====================================
 
 const audio = getId("bg-music");
-//const musicButton = getId("music-toggle");
+const musicButton = getId("music-toggle");
 
 let musicStarted = true;
 
