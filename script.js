@@ -4,17 +4,17 @@
   Replace sample names, functions, venue and WhatsApp number.
 */
 const WEDDING = {
-  bride: "Shreya",
-  groom: "Rohan",
-  brideParents: "Bride's parents",
-  groomParents: "Groom's parents",
-  family: "Sharma & Family",
-  date: "2027-02-20T19:00:00",
-  dateLabel: "20 • FEBRUARY • 2027",
-  venue: "The Grand Ballroom",
-  address: "Venue address, Ghaziabad, Uttar Pradesh, India",
-  mapQuery: "The Grand Ballroom Ghaziabad",
-  whatsappNumber: "919876543210", // country code + number, no + or spaces
+  groom: "Ankit",
+  bride: "Riya",
+  groomParents: "Shila Rai & Late Avinash Rai",
+  brideParents: "Rita Rai & Padam Rai",
+  family: "Rai Family",
+  date: "2027-02-27T18:00:00",
+  dateLabel: "27 • FEBRUARY • 2027",
+  venue: "K J International",
+  address: "N.H-56, Airport Road, Near Sammukh Hospital, Babatpur, Sarai Takki, Varanasi, Uttar Pradesh, India",
+  mapQuery: "K J International Hotel",
+  whatsappNumber: "917303732633", // country code + number, no + or spaces
   musicFile: "assets/wedding-music.mp3" // add your own royalty-free audio file
 };
 
