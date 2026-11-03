@@ -162,12 +162,24 @@ async function startWeddingMusic() {
   }
 }
 
-// Start music on the visitor's first click anywhere
-// except the music button itself.
-document.addEventListener("click", (event) => {
-  if (musicButton && musicButton.contains(event.target)) return;
-  startWeddingMusic();
-});
+// Welcome screen: the guest's button click starts music and opens the invitation.
+const welcomeScreen = getId("welcome-screen");
+const openInvitationButton = getId("open-invitation");
+
+if (welcomeScreen && openInvitationButton) {
+  document.body.classList.add("welcome-active");
+
+  openInvitationButton.addEventListener("click", () => {
+    // This click is a direct user gesture, so browsers can allow music playback.
+    startWeddingMusic();
+
+    welcomeScreen.classList.add("is-opening");
+    window.setTimeout(() => {
+      document.body.classList.remove("welcome-active");
+      welcomeScreen.setAttribute("aria-hidden", "true");
+    }, 900);
+  });
+}
 
 // Music button: manually play or pause
 if (musicButton && audio) {
