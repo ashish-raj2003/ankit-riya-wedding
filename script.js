@@ -3,8 +3,8 @@
   WEDDING INVITATION CONFIGURATION
 */
 const WEDDING = {
-  groom: "Ankit",
-  bride: "Riya",
+  groom: "ANKIT",
+  bride: "RIYA",
   groomParents: "Smt. Shila Rai & Late Avinash Rai",
   brideParents: "Smt. Rita Rai & Shri. Padam Rai",
   family: "Rai Family",
