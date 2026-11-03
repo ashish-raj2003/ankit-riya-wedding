@@ -5,8 +5,8 @@
 const WEDDING = {
   groom: "Ankit",
   bride: "Riya",
-  groomParents: "Shila Rai & Late Avinash Rai",
-  brideParents: "Rita Rai & Padam Rai",
+  groomParents: "Smt. Shila Rai & Late Avinash Rai",
+  brideParents: "Smt. Rita Rai & Shri. Padam Rai",
   family: "Rai Family",
   date: "2027-02-27T18:00:00",
   dateLabel: "27 • FEBRUARY • 2027",
@@ -129,9 +129,9 @@ if (menuButton && nav) {
 // ====================================
 
 const audio = getId("bg-music");
-const musicButton = getId("music-toggle");
+//const musicButton = getId("music-toggle");
 
-let musicStarted = false;
+let musicStarted = true;
 
 if (audio && musicButton) {
 
