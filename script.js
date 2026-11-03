@@ -1,10 +1,7 @@
 
 /*
-  RIYA & ANKIT WEDDING INVITATION
-  Edit wedding details in the WEDDING section.
-  Dates use YYYY-MM-DDTHH:MM:SS in local time.
+  WEDDING INVITATION CONFIGURATION
 */
-
 const WEDDING = {
   groom: "Ankit",
   bride: "Riya",
@@ -20,46 +17,50 @@ const WEDDING = {
   musicFile: "assets/wedding-music.mp3"
 };
 
-// Wedding information
+// SAFE ELEMENT HELPER
+const get = (selector) => document.querySelector(selector);
+const getId = (id) => document.getElementById(id);
+
+// WEDDING DETAILS
 document.querySelectorAll("[data-groom]").forEach(el => el.textContent = WEDDING.groom);
 document.querySelectorAll("[data-bride]").forEach(el => el.textContent = WEDDING.bride);
 
-const groomParents = document.querySelector("[data-groom-parents]");
-if (groomParents) groomParents.textContent = WEDDING.groomParents;
+const setText = (selector, value) => {
+  const el = get(selector);
+  if (el) el.textContent = value;
+};
 
-const brideParents = document.querySelector("[data-bride-parents]");
-if (brideParents) brideParents.textContent = WEDDING.brideParents;
+setText("[data-groom-parents]", WEDDING.groomParents);
+setText("[data-bride-parents]", WEDDING.brideParents);
+setText("[data-family]", WEDDING.family);
+setText("[data-wedding-date]", WEDDING.dateLabel);
+setText("[data-venue]", WEDDING.venue);
+setText("[data-address]", WEDDING.address);
 
-const family = document.querySelector("[data-family]");
-if (family) family.textContent = WEDDING.family;
+// GOOGLE MAPS
+const mapLink = getId("map-link");
 
-const weddingDate = document.querySelector("[data-wedding-date]");
-if (weddingDate) weddingDate.textContent = WEDDING.dateLabel;
-
-const venue = document.querySelector("[data-venue]");
-if (venue) venue.textContent = WEDDING.venue;
-
-const address = document.querySelector("[data-address]");
-if (address) address.textContent = WEDDING.address;
-
-const mapLink = document.getElementById("map-link");
 if (mapLink) {
-  mapLink.href = "https://www.google.com/maps/search/?api=1&query=" +
+  mapLink.href =
+    "https://www.google.com/maps/search/?api=1&query=" +
     encodeURIComponent(WEDDING.mapQuery);
 }
 
-// WhatsApp RSVP
-const rsvpButton = document.getElementById("whatsapp-rsvp");
+// WHATSAPP RSVP
+const rsvpLink = getId("whatsapp-rsvp");
 
-if (rsvpButton) {
-  const rsvpText = `Hello! We are happy to share that we will join ${WEDDING.groom} & ${WEDDING.bride}'s wedding celebrations.`;
+if (rsvpLink) {
+  const rsvpText =
+    `Hello! We are happy to share that we will join ${WEDDING.groom} & ${WEDDING.bride}'s wedding celebrations.`;
 
-  rsvpButton.href = "https://wa.me/" +
+  rsvpLink.href =
+    "https://wa.me/" +
     WEDDING.whatsappNumber +
-    "?text=" + encodeURIComponent(rsvpText);
+    "?text=" +
+    encodeURIComponent(rsvpText);
 }
 
-// Countdown
+// COUNTDOWN
 const target = new Date(WEDDING.date).getTime();
 
 function updateCountdown() {
@@ -76,35 +77,38 @@ function updateCountdown() {
 
   const seconds = Math.floor(distance / 1000);
 
-  const dayElement = document.getElementById("days");
-  const hourElement = document.getElementById("hours");
-  const minuteElement = document.getElementById("minutes");
-  const secondElement = document.getElementById("seconds");
-
-  if (dayElement) dayElement.textContent = String(days).padStart(3, "0");
-  if (hourElement) hourElement.textContent = String(hours).padStart(2, "0");
-  if (minuteElement) minuteElement.textContent = String(minutes).padStart(2, "0");
-  if (secondElement) secondElement.textContent = String(seconds).padStart(2, "0");
+  setText("#days", String(days).padStart(3, "0"));
+  setText("#hours", String(hours).padStart(2, "0"));
+  setText("#minutes", String(minutes).padStart(2, "0"));
+  setText("#seconds", String(seconds).padStart(2, "0"));
 }
 
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
-// Smooth reveal on scroll
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add("visible");
-      observer.unobserve(entry.target);
-    }
+// SCROLL REVEAL
+if ("IntersectionObserver" in window) {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll(".reveal").forEach(el => {
+    observer.observe(el);
   });
-}, { threshold: 0.12 });
+} else {
+  document.querySelectorAll(".reveal").forEach(el => {
+    el.classList.add("visible");
+  });
+}
 
-document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
-
-// Mobile navigation
-const menuButton = document.querySelector(".menu-toggle");
-const nav = document.querySelector(".nav");
+// MOBILE NAVIGATION
+const menuButton = get(".menu-toggle");
+const nav = get(".nav");
 
 if (menuButton && nav) {
   menuButton.addEventListener("click", () => {
@@ -112,95 +116,101 @@ if (menuButton && nav) {
     menuButton.setAttribute("aria-expanded", String(open));
   });
 
-  nav.querySelectorAll("a").forEach(a => {
-    a.addEventListener("click", () => {
+  nav.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
       nav.classList.remove("open");
       menuButton.setAttribute("aria-expanded", "false");
     });
   });
 }
 
-// =====================================
-// BACKGROUND MUSIC
-// =====================================
+// ====================================
+// BACKGROUND MUSIC PLAYER
+// ====================================
 
-const audio = document.getElementById("bg-music");
-const musicButton = document.getElementById("music-toggle");
+const audio = getId("bg-music");
+const musicButton = getId("music-toggle");
 
 let musicStarted = false;
 
-if (audio) {
+if (audio && musicButton) {
+
+  const musicLabel = musicButton.querySelector(".music-label");
+
+  // Configure audio
   audio.src = WEDDING.musicFile;
   audio.loop = true;
   audio.preload = "auto";
   audio.volume = 0.6;
-}
 
-function updateMusicLabel(message, playing) {
-  if (!musicButton) return;
+  function updateMusicButton(isPlaying) {
+    if (musicLabel) {
+      musicLabel.textContent = isPlaying ? "Music on" : "Music off";
+    }
 
-  const label = musicButton.querySelector(".music-label");
-
-  if (label) label.textContent = message;
-
-  musicButton.setAttribute(
-    "aria-label",
-    playing ? "Pause background music" : "Play background music"
-  );
-}
-
-// Start music after the guest's first interaction
-async function startWeddingMusic() {
-  if (!audio || musicStarted) return;
-
-  try {
-    await audio.play();
-    musicStarted = true;
-    updateMusicLabel("Music on", true);
-  } catch (error) {
-    console.log("Music playback could not start:", error);
-    updateMusicLabel("Tap for music", false);
+    musicButton.setAttribute(
+      "aria-label",
+      isPlaying ? "Pause background music" : "Play background music"
+    );
   }
-}
 
-// Try automatic playback on the first guest interaction.
-// Browser security rules require a user gesture for audible playback.
-document.addEventListener("click", startWeddingMusic, { once: true });
+  // Start music after a guest interaction
+  async function startWeddingMusic() {
+    if (musicStarted && !audio.paused) return;
 
-document.addEventListener("keydown", startWeddingMusic, { once: true });
+    try {
+      await audio.play();
+      musicStarted = true;
+      updateMusicButton(true);
+    } catch (error) {
+      console.warn("Wedding music could not start:", error);
 
-// Manual play / pause control
-if (musicButton && audio) {
-  musicButton.addEventListener("click", async () => {
-    if (audio.paused) {
-      try {
-        await audio.play();
-        musicStarted = true;
-        updateMusicLabel("Music on", true);
-      } catch (error) {
-        console.log("Music playback error:", error);
-        updateMusicLabel("Music unavailable", false);
+      if (musicLabel) {
+        musicLabel.textContent = "Tap to play";
       }
+    }
+  }
+
+  // Music button: play or pause
+  musicButton.addEventListener("click", async (event) => {
+    event.stopPropagation();
+
+    if (audio.paused) {
+      await startWeddingMusic();
     } else {
       audio.pause();
-      updateMusicLabel("Music off", false);
+      updateMusicButton(false);
     }
   });
-}
 
-// Keep button label synchronised with audio
-if (audio) {
-  audio.addEventListener("play", () => {
-    musicStarted = true;
-    updateMusicLabel("Music on", true);
+  // Start music when guest taps elsewhere on the invitation.
+  // Ignore the music button itself to prevent double toggling.
+  document.addEventListener("click", (event) => {
+    if (!musicButton.contains(event.target)) {
+      startWeddingMusic();
+    }
   });
 
-  audio.addEventListener("pause", () => {
-    updateMusicLabel("Music off", false);
+  // Also support keyboard interaction
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      if (!musicButton.contains(event.target)) {
+        startWeddingMusic();
+      }
+    }
   });
+
+  // Keep button status synchronized
+  audio.addEventListener("play", () => updateMusicButton(true));
+  audio.addEventListener("pause", () => updateMusicButton(false));
 
   audio.addEventListener("error", () => {
-    console.log("Unable to load wedding music. Check the MP3 file path.");
-    updateMusicLabel("Music unavailable", false);
+    console.error("Unable to load wedding music:", audio.error);
+
+    if (musicLabel) {
+      musicLabel.textContent = "Music unavailable";
+    }
   });
+
+  updateMusicButton(false);
 }
